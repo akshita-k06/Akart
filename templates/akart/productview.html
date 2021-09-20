@@ -1,0 +1,61 @@
+{% extends 'akart/basic.html' %}
+{% load static %}
+{% block title%}{{recproduct.product_name}} -- Akart{% endblock %}
+{% block css %} 
+<style>
+img{
+    padding:10px;
+    border:2px solid black;
+}
+.mycont{
+   margin-top:4%;
+}
+.para{
+    text-align:center;
+}
+</style>
+{% endblock %}
+{% block body %}
+<marquee behavior="alternate"><h2>----Flash on!!! Diwali Sale----</h2></marquee>
+<div class="container mycont">
+    <div class="row">
+    <div class="col-4 col-lg-4 col-xl-4 col-sm-4 col-md-4">
+       <img src="/media//{{recproduct.image}}" class="img-fluid">
+       <div class="row center">
+        <button class="btn btn-success mt-4 ml-5">Buy Now</button>
+        <button class="btn btn-success mt-4 ml-5">Add To Cart</button>
+        
+    </div>
+    </div>
+    <div class="col-8 col-lg-8 col-xl-8 col-sm-8 col-md-8 para">
+        <p>We are here to provide you with the best guranteed products.</p>
+        <h3>Product name: {{recproduct.product_name}}</h3>
+        <h4>({{recproduct.subcatagory}})</h4>
+        <h3><b>Rs. {{recproduct.price}}/- (20% off) </b></h3>
+        <p>{{recproduct.product_description}}</p>
+        <h4>Grab the opportunity and buy the product with maximum discount!!!</h4>
+    </div>
+        </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+var sum=0;
+//counting the items in the cart
+
+  cartdict = JSON.parse(localStorage.getItem('addtocart'));
+  localStorage.setItem('cartdict', JSON.stringify(cartdict));  
+
+console.log(cartdict);
+for (item in cartdict) {
+    console.log(item);
+    let qty=cardict[items][0];
+    console.log("qty");
+    console.log(qty);
+    sum=sum+qty;
+}
+console.log(sum);
+document.getElementById('cartvalues').innerHTML = sum; 
+</script> 
+
+{% endblock %}

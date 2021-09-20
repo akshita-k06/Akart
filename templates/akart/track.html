@@ -1,0 +1,89 @@
+{% extends 'akart/basic.html' %}
+{% load static %}
+{% block title%}Track your order{% endblock %}
+{% block body%}
+<div class="container">
+  <br><br>
+  <h2>Akart Tracker - Enter your order id and password to track your order</h2>
+  <br><br>
+  <form action="" method="POST" id="trackerform">{% csrf_token %}
+    <input type="hidden" name="items_json" id="items_json">
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="trackerid">Order Id</label>
+        <input type="number" name="trackerid" class="form-control" id="trackerid" required>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="inputPassword4">Password</label>
+        <input type="trackerpassword" class="form-control" name="trackerpassword" id="trackerPassword" required>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-success">Track Order</button>
+  </form>
+  <br><br>
+  <div class="col my-4">
+    <h2>Your Order Status :</h2>
+    <div class="my-4">
+      <ul class="list-group" id="items">
+        Enter your order id and password and click track order to find details about your order!
+      </ul>
+    </div>
+  </div>
+  <br>
+  <div class="col my-4">
+    <h2>Your Ordered Items :</h2>
+    <div class="my-4">
+      <ul class="list-group" id="citems">
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+  $('#trackerform').submit(function (event) {
+    $('#items').empty();
+    var formdata = {
+      'trackerid': $('input[name=trackerid]').val(),
+      'trackerpassword': $('input[name=trackerpassword]').val(),
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+    };
+    $.ajax({
+        type: 'POST',
+        url: '/akart/track/',
+        data: formdata,
+        encode: true
+      })
+      .done(function (data) {
+        data = JSON.parse(data);
+        console.log(data);
+        updates=data[0]
+        console.log(updates);
+        if (updates.length > 0 & updates != {}) {
+          for (i = 0; i < updates.length; i++) {
+            let text = updates[i]['text'];
+            let time = updates[i]['time'];
+            mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">${text}
+        <span class="badge badge-primary badge-pill">${time}</span>
+        </li>`
+            $('#items').append(mystr);
+          }
+        } else {
+          mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">Sorry, we are not able to fetch the order id and password. make sure it is correct.
+        </li>`
+        $('#items').append(mystr);
+        }
+      var ordered_prod=JSON.parse(data[1]);
+      for (items in ordered_prod) {
+            let prod = ordered_prod[items][1];
+            let quan = ordered_prod[items][0];
+            mystr1 = `<li class="list-group-item d-flex justify-content-between align-items-center">${prod}
+        <span class="badge badge-primary badge-pill">${quan}</span>
+        </li>`
+            $('#citems').append(mystr1);
+          }
+      });
+    event.preventDefault();
+  });
+</script>
+{% endblock %}
